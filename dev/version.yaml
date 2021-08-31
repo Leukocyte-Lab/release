@@ -1,5 +1,5 @@
-﻿digest: 260f50c16bb036d7ce752201a9acf7b7118263f37867656b1e7fca005a5023ad
-timestamp: 1628477940
-tag: v0.2.1
-releaseversion: v0.1.1
-releaselog: early test release
+﻿digest: 3e4589243eae11fa0d08c4e99f80c65711be31ede0cfc7723b26cee58de23d85
+timestamp: 1630374780
+tag: v0.3.0
+releaseversion: v0.2.0
+releaselog: watchcat v0.3.0 and attack v0.4.5
