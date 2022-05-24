@@ -1,5 +1,5 @@
 digest: e66cc8b3c443e3e6126875a9a085a2876161ba761f2f04302708b3978b630052
-timestamp: 1653301688
-tag: v0.4.0
-releaseversion: v0.3.0
-releaselog: attack v0.5.0
+timestamp: 1653301689
+tag: v0.3.2-harbor
+releaseversion: v0.3.1
+releaselog: attack v0.4.7
