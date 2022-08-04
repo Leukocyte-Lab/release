@@ -1,5 +1,5 @@
 digest: e66cc8b3c443e3e6126875a9a085a2876161ba761f2f04302708b3978b630052
 timestamp: 1653301693
-tag: v0.4.4
+tag: v0.5.1
 releaseversion: v0.5.3
 releaselog: Upgrade ATT&CK engine to v0.5.3
