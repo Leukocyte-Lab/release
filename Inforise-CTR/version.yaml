@@ -4,7 +4,7 @@ tag: v0.9.1
 releaseversion: v0.3.5
 releaselog: |-
   Update worker packages to `v0.9.1`.
-  
+
   - fix: `allow_proxy` field default value.
   - fix: `is_official` field default value.
   - fix: Compatibility for new spec definitions.
