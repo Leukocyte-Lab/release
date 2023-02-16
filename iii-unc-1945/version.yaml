@@ -1,5 +1,6 @@
-digest: 9e9464c95b09eb12523a63b1ae4cd762b4e337faf505cafcab39d3f611336221
-timestamp: 1667284543
-tag: v0.7.11
-releaseversion: v0.6.0
-releaselog: official
+digest: e66cc8b3c443e3e6126875a9a085a2876161ba761f2f04302708b3978b630052
+timestamp: 1653301693
+tag: v0.9.4-apt-only
+releaseversion: v0.9.4
+releaselog: |-
+  Update worker packages to `v0.9.4-apt-only`.
