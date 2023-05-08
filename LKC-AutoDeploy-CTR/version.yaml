@@ -1,7 +1,7 @@
 digest: e66cc8b3c443e3e6126875a9a085a2876161ba761f2f04302708b3978b630052
 timestamp: 1653301693
-tag: v1.4.0-agh2-v1.0.1.dev-all
-releaseversion: v0.3.7
+tag: v1.4.0-agh2-v1.0.1.dev1-all
+releaseversion: v0.3.8
 releaselog: |-
   Update worker packages to `v0.9.1`.
   - fix: `allow_proxy` field default value.
