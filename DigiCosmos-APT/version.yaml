@@ -1,7 +1,5 @@
-digest: 6252fafd692d3eb72a9976b0b13c490094ff9603035531274cadeb417ce80c19
-timestamp: 1686305592
-tag: v1.5.1-agh2-apt-v1.0.4-all
-releaseversion: v0.4.0
-releaselog: |-
-  Update updater packages to `v1.5.1-agh2-apt-v1.0.4-all`.
-  - add: `FIN 2023` 
+digest: e66cc8b3c443e3e6126875a9a085a2876161ba761f2f04302708b3978b630052
+timestamp: 1653301693
+tag: v1.5.1-agh2-apt-v1.0.5-all
+releaseversion: v1.0.5
+releaselog: Updater `v1.5.1-agh2-apt-v1.0.5-all`
