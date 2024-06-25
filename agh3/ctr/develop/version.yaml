@@ -2,14 +2,14 @@ appVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.3.2"
-    chartVersion: "3.5.2"
+    appVersion: "v3.3.3"
+    chartVersion: "3.5.3"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.5.2"
+        value: "3.5.3"
     releaseLog: |-
-      ArgusHack Center Player v3.3.2
+      ArgusHack Center Player v3.3.3
 
       New Features:
       - Execution result enhancement
