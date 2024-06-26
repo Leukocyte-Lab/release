@@ -2,14 +2,14 @@ appVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.3.3"
-    chartVersion: "3.5.3"
+    appVersion: "v3.3.4"
+    chartVersion: "3.5.4"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.5.3"
+        value: "3.5.4"
     releaseLog: |-
-      ArgusHack Center Player v3.3.3
+      ArgusHack Center Player v3.3.4
 
       New Features:
       - Execution result enhancement
@@ -24,6 +24,6 @@ spec:
       - Auto recovery of the abnormal status of MQ channel/connection
 
   package:
-    version: v1.0.0
-    updaterTag: v1.10.3-agh3-v1.0.2-all
+    version: v1.1.0
+    updaterTag: v1.10.3-agh3-v1.1.0-all
     releaseLog: ""
