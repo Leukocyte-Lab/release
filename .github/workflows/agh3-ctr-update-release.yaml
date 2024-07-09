@@ -1,0 +1,178 @@
+name: 🔧 [AGH3-CTR] Update Release Channel
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_channel:
+        description: "Release Channel to Update"
+        required: true
+        default: "stable"
+        type: choice
+        options:
+          - stable
+          - beta
+          - develop
+      chart_version:
+        description: "Chart Version (semver, or leave blank to remain)"
+        required: false
+        type: string
+      app_version:
+        description: "App Version (semver, or leave blank to remain)"
+        required: false
+        type: string
+      system_release_log:
+        description: "Release Notes (markdown, or leave blank to remain)"
+        required: false
+        type: string
+      package_version:
+        description: "Datasets Version (semver, or leave blank to remain)"
+        required: false
+        type: string
+      package_release_log:
+        description: "Release Notes (markdown, or leave blank to remain)"
+        required: false
+        type: string
+      package_updater_tag:
+        description: "Package Updater Tag (semver, or leave blank to remain)"
+        required: false
+        type: string
+
+jobs:
+  update-release-channel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔔 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Update System matters to target release channel
+      - name: 🖍️ Modify -> System Version tags
+        if: ${{ inputs.chart_version != '' && inputs.app_version != '' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: |
+            cp agh3/ctr/${{ inputs.release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+            cat agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp | \
+              yq '.spec.system.appVersion = "${{ inputs.app_version }}"' | \
+              yq '.spec.system.chartVersion = "${{ inputs.chart_version }}"' | \
+              yq '(.spec.system.patches[] | select(.path == "/spec/version").value) = "${{ inputs.chart_version }}"' | \
+              yq '.' > agh3/ctr/${{ inputs.release_channel }}/version.yaml
+            rm agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+      - name: 🖍️ Modify -> System Release Notes
+        if: ${{ inputs.system_release_log != '' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: |
+            cp agh3/ctr/${{ inputs.release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+            cat agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp | \
+              yq '.spec.system.releaseLog = "${{ inputs.system_release_log }}"' | \
+              yq '.' > agh3/ctr/${{ inputs.release_channel }}/version.yaml
+            rm agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+      - name: ⏩ Skip -> Modify System Version tags
+        if: ${{ inputs.chart_version == '' || inputs.app_version == '' }}
+        run: |
+          echo "Input Chart Version: ${{ inputs.chart_version }}"
+          echo "Input App Version: ${{ inputs.app_version }}"
+          echo "You must provide both Chart Version and App Version to update System."
+          echo "No changes to apply to. Skipping..."
+      - name: ⏩ Skip -> Modify System Release Notes
+        if: ${{ inputs.system_release_log == '' }}
+        run: |
+          echo "Input System Release Notes: ${{ inputs.system_release_log }}"
+          echo "No changes to apply to. Skipping..."
+
+      # Update Datasets matters to target release channel
+      - name: 🖍️ Modify -> Datasets Version tags
+        if: ${{ inputs.package_version != '' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: |
+            cp agh3/ctr/${{ inputs.release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+            cat agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp | \
+              yq '.spec.package.version = "${{ inputs.package_version }}"' | \
+              yq '.' > agh3/ctr/${{ inputs.release_channel }}/version.yaml
+            rm agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+      - name: 🖍️ Modify -> Datasets Release Notes
+        if: ${{ inputs.package_release_log != '' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: |
+            cp agh3/ctr/${{ inputs.release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+            cat agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp | \
+              yq '.spec.package.releaseLog = "${{ inputs.package_release_log }}"' | \
+              yq '.' > agh3/ctr/${{ inputs.release_channel }}/version.yaml
+            rm agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+      - name: 🖍️ Modify -> Package Updater Tag
+        if: ${{ inputs.package_updater_tag != '' }}
+        uses: mikefarah/yq@v4
+        with:
+          cmd: |
+            cp agh3/ctr/${{ inputs.release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+            cat agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp | \
+              yq '.spec.package.updaterTag = "${{ inputs.package_updater_tag }}"' | \
+              yq '.' > agh3/ctr/${{ inputs.release_channel }}/version.yaml
+            rm agh3/ctr/${{ inputs.release_channel }}/version.yaml.tmp
+      - name: ⏩ Skip -> Modify Datasets Version tags
+        if: ${{ inputs.package_version == '' }}
+        run: |
+          echo "Input Datasets Version: ${{ inputs.package_version }}"
+          echo "No changes to apply to. Skipping..."
+      - name: ⏩ Skip -> Modify Datasets Release Notes
+        if: ${{ inputs.package_release_log == '' }}
+        run: |
+          echo "Input Datasets Release Notess: ${{ inputs.package_release_log }}"
+          echo "No changes to apply to. Skipping..."
+      - name: ⏩ Skip -> Modify Package Updater Tag
+        if: ${{ inputs.package_updater_tag == '' }}
+        run: |
+          echo "Input Updater Tag: ${{ inputs.package_updater_tag }}"
+          echo "No changes to apply to. Skipping..."
+
+      - name: 👁️ Lookup variables
+        id: lookup
+        run: |
+          APP_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.system.appVersion')"
+          CHART_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.system.chartVersion')"
+          RELEASE_LOG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.system.releaseLog')"
+          PACKAGE_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.package.version')"
+          PACKAGE_RELEASE_LOG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.package.releaseLog')"
+          PACKAGE_UPDATER_TAG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
+            yq '.spec.package.updaterTag')"
+
+          echo "appVersion=$APP_VERSION" >> "$GITHUB_OUTPUT"
+          echo "chartVersion=$CHART_VERSION" >> "$GITHUB_OUTPUT"
+          echo "releaseLog=$RELEASE_LOG" >> "$GITHUB_OUTPUT"
+          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "packageReleaseLog=$PACKAGE_RELEASE_LOG" >> "$GITHUB_OUTPUT"
+          echo "packageUpdaterTag=$PACKAGE_UPDATER_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: 🙌 Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          branch: build/update-release-channel-${{ inputs.release_channel }}
+          commit-message: |
+            build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}
+          title: "build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}"
+          body: |
+            # System
+            - Chart Version: `${{ steps.lookup.outputs.chartVersion }}`
+            - App Version: `${{ steps.lookup.outputs.appVersion }}`
+
+            ## Release Notes
+            ${{ steps.lookup.outputs.releaseLog}}
+
+            ---
+
+            # Datasets
+            - Version: `${{ steps.lookup.outputs.packageVersion }}`
+            - Updater Tag: `${{ steps.lookup.outputs.packageUpdaterTag }}`
+
+            ## Release Notes
+            ${{ steps.lookup.outputs.packageReleaseLog }}
