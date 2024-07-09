@@ -1,4 +1,4 @@
-appVersion: agh.lkc-lab.com/v3alpha1
+apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
