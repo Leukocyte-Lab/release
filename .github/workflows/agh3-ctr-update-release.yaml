@@ -129,29 +129,37 @@ jobs:
           echo "Input Updater Tag: ${{ inputs.package_updater_tag }}"
           echo "No changes to apply to. Skipping..."
 
-      - name: 👁️ Lookup variables
-        id: lookup
-        run: |
-          APP_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.system.appVersion')"
-          CHART_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.system.chartVersion')"
-          RELEASE_LOG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.system.releaseLog')"
-          PACKAGE_VERSION="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.package.version')"
-          PACKAGE_RELEASE_LOG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.package.releaseLog')"
-          PACKAGE_UPDATER_TAG="$(cat agh3/ctr/${{ inputs.release_channel }}/version.yaml | \
-            yq '.spec.package.updaterTag')"
-
-          echo "appVersion=$APP_VERSION" >> "$GITHUB_OUTPUT"
-          echo "chartVersion=$CHART_VERSION" >> "$GITHUB_OUTPUT"
-          echo "releaseLog=$RELEASE_LOG" >> "$GITHUB_OUTPUT"
-          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
-          echo "packageReleaseLog=$PACKAGE_RELEASE_LOG" >> "$GITHUB_OUTPUT"
-          echo "packageUpdaterTag=$PACKAGE_UPDATER_TAG" >> "$GITHUB_OUTPUT"
-
+      # Create PR
+      - name: 👁️ Lookup App Version
+        id: appVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.appVersion' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Chart Version
+        id: chartVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.chartVersion' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Release Notes
+        id: releaseLog
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.releaseLog' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Version
+        id: packageVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.version' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Release Notes
+        id: packageReleaseLog
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.releaseLog' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Updater Tag
+        id: packageUpdaterTag
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.updaterTag' agh3/ctr/${{ inputs.release_channel }}/version.yaml
       - name: 🙌 Create PR
         uses: peter-evans/create-pull-request@v6
         with:
@@ -162,17 +170,17 @@ jobs:
           title: "build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}"
           body: |
             # System
-            - Chart Version: `${{ steps.lookup.outputs.chartVersion }}`
-            - App Version: `${{ steps.lookup.outputs.appVersion }}`
+            - Chart Version: `${{ steps.chartVersion.outputs.result }}`
+            - App Version: `${{ steps.appVersion.outputs.result }}`
 
             ## Release Notes
-            ${{ steps.lookup.outputs.releaseLog}}
+            ${{ steps.releaseLog.outputs.result }}
 
             ---
 
             # Datasets
-            - Version: `${{ steps.lookup.outputs.packageVersion }}`
-            - Updater Tag: `${{ steps.lookup.outputs.packageUpdaterTag }}`
+            - Version: `${{ steps.packageVersion.outputs.result }}`
+            - Updater Tag: `${{ steps.packageUpdaterTag.outputs.result }}`
 
             ## Release Notes
-            ${{ steps.lookup.outputs.packageReleaseLog }}
+            ${{ steps.packageReleaseLog.outputs.result }}
