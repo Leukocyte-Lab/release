@@ -1,0 +1,94 @@
+name: 🔧 [AGH3-CTR] Promote Release Channel
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_release_channel:
+        description: "Source Release Channel"
+        required: true
+        default: "develop"
+        type: choice
+        options:
+          - stable
+          - beta
+          - develop
+      release_channel:
+        description: "Release Channel to Promote to"
+        required: true
+        default: "beta"
+        type: choice
+        options:
+          - stable
+          - beta
+          - develop
+
+jobs:
+  promote-release-channel:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.source_release_channel != inputs.release_channel }}
+    steps:
+      - name: 🔔 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Perform Promotion
+      - name: 👉 Apply Release Channel Promotion ${{ inputs.source_release_channel }} -> ${{ inputs.release_channel }}
+        run: |
+          cp agh3/ctr/${{ inputs.source_release_channel }}/version.yaml agh3/ctr/${{ inputs.release_channel }}/version.yaml
+
+      # Create PR
+      - name: 👁️ Lookup App Version
+        id: appVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.appVersion' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Chart Version
+        id: chartVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.chartVersion' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Release Notes
+        id: releaseLog
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.system.releaseLog' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Version
+        id: packageVersion
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.version' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Release Notes
+        id: packageReleaseLog
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.releaseLog' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 👁️ Lookup Datasets Updater Tag
+        id: packageUpdaterTag
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq '.spec.package.updaterTag' agh3/ctr/${{ inputs.release_channel }}/version.yaml
+      - name: 🙌 Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          branch: build/update-release-channel-${{ inputs.release_channel }}
+          commit-message: |
+            build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}
+          title: "build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}"
+          body: |
+            # System
+            - Chart Version: `${{ steps.chartVersion.outputs.result }}`
+            - App Version: `${{ steps.appVersion.outputs.result }}`
+
+            ## Release Notes
+            ${{ steps.releaseLog.outputs.result }}
+
+            ---
+
+            # Datasets
+            - Version: `${{ steps.packageVersion.outputs.result }}`
+            - Updater Tag: `${{ steps.packageUpdaterTag.outputs.result }}`
+
+            ## Release Notes
+            ${{ steps.packageReleaseLog.outputs.result }}
