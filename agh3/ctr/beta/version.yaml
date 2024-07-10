@@ -2,12 +2,12 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.3.13"
-    chartVersion: "3.5.13"
+    appVersion: "3.3.14"
+    chartVersion: "3.5.14"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.5.13"
+        value: "3.5.14"
     releaseLog: |-
       New Features:
       - Execution result enhancement
@@ -20,7 +20,6 @@ spec:
       Bug Fixes:
       - Fix the problem of the MQ service failure caused by the abnormal exit of the execution
       - Auto recovery of the abnormal status of MQ channel/connection
-
   package:
     version: v1.1.0
     updaterTag: v1.10.3-agh3-v1.1.0-all
