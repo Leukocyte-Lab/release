@@ -164,7 +164,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GH_TOKEN }}
-          branch: build/update-release-channel-${{ inputs.release_channel }}
+          branch: build/update-release-channel-${{ inputs.release_channel }}-${{ steps.chartVersion.outputs.result }}-${{ steps.appVersion.outputs.result }}
           commit-message: |
             build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}
           title: "build: Apply AGH3/CTR updates to release channel ${{ inputs.release_channel }}"
