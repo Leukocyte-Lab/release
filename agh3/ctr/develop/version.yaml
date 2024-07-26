@@ -11,6 +11,6 @@ spec:
     releaseLog: |-
       - Custom Variable
   package:
-    version: v1.10.3-agh3-v1.2.3-all
-    updaterTag: v1.10.3-agh3-v1.1.0-all
+    version: v1.2.3
+    updaterTag: v1.10.3-agh3-v1.2.3-all
     releaseLog: ""
