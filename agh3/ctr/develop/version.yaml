@@ -2,7 +2,7 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.4.3"
+    appVersion: "v3.4.2"
     chartVersion: "3.6.3"
     patches:
       - op: replace
