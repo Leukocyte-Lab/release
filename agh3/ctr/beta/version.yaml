@@ -2,25 +2,23 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.3.14"
-    chartVersion: "3.5.14"
+    appVersion: "v3.4.2"
+    chartVersion: "3.6.3"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.5.14"
+        value: "3.6.3"
     releaseLog: |-
       New Features:
-      - Execution result enhancement
-      - Playbook selection enhancement
-      - System OTA support
-      - I18n support enhancement
+      - Custom Variable
+      - Playbook search enhancement
+      - Rename CEIAE to ATTACK Surfaces
+      - Rename Resource to Playbook
       - System performance optimization
-      - System Agent/C2 service stability optimization
 
       Bug Fixes:
-      - Fix the problem of the MQ service failure caused by the abnormal exit of the execution
-      - Auto recovery of the abnormal status of MQ channel/connection
+      - Filter operation system by platform
   package:
-    version: v1.1.0
-    updaterTag: v1.10.3-agh3-v1.1.0-all
+    version: v1.3.1
+    updaterTag: v1.10.3-agh3-v1.3.1-all
     releaseLog: ""
