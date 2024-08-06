@@ -2,26 +2,14 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.4.2"
-    chartVersion: "3.6.3"
+    appVersion: "v3.4.3"
+    chartVersion: "3.6.4"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.6.3"
+        value: "3.6.4"
     releaseLog: |-
-      New Features:
-      - Improved Realism and Flexibility in Scenario Exercises
-        - Added Custom Variable functionality, allowing specific parameters to be set before executing a scenario, providing exercise content that best fits the customer's environment.
-        
-      Improvement:
-      - Enhanced Search Functionality
-        - Now able to search scenarios using Technique numbers, cybersecurity framework numbers, etc.
-      - More Precise Interface Terminology
-      - System Performance Enhancement
-
-      Bug Fixes:
-      - Filter operation system by platform
-      - General bug fix.
+      - Custom Variable
   package:
     version: v1.3.1
     updaterTag: v1.10.3-agh3-v1.3.1-all
