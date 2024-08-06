@@ -9,7 +9,19 @@ spec:
         path: /spec/version
         value: "3.6.4"
     releaseLog: |-
-      - Custom Variable
+      New Features:
+      - Improved Realism and Flexibility in Scenario Exercises
+        - Added Custom Variable functionality, allowing specific parameters to be set before executing a scenario, providing exercise content that best fits the customer's environment.
+        
+      Improvement:
+      - Enhanced Search Functionality
+        - Now able to search scenarios using Technique numbers, cybersecurity framework numbers, etc.
+      - More Precise Interface Terminology
+      - System Performance Enhancement
+      Bug Fixes:
+      - Filter operation system by platform
+      - General bug fix.
+      - Export api version migrate to v3alpha2
   package:
     version: v1.3.1
     updaterTag: v1.10.3-agh3-v1.3.1-all
