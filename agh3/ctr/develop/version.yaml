@@ -9,7 +9,31 @@ spec:
         path: /spec/version
         value: "3.6.5"
     releaseLog: |-
-      - Custom Variable
+      New Features:
+      - Improved Realism and Flexibility in Scenario Exercises
+        - Added Custom Variable functionality, allowing specific parameters to be set before executing a scenario, providing exercise content that best fits the customer's environment.
+        
+      Improvement:
+      - Enhanced Search Functionality
+        - Now able to search scenarios using Technique numbers, cybersecurity framework numbers, etc.
+      - More Precise Interface Terminology
+      - System Performance Enhancement
+      Bug Fixes:
+      - v3.4.0
+        - Filter operation system by platform
+        - General bug fix
+      - v3.4.1
+        - Fix OIDC issue
+      - v3.4.2
+        - Fix Export YAML API
+      - v3.4.3
+        - Improve Report performance
+        - Export api version migrate to v3alpha2
+      - v3.4.4
+        - Enhance report performance and extend timeout
+        - Fix potential performance overhead on execution
+        - Fix custom variable specter issue
+        
   package:
     version: v1.3.1
     updaterTag: v1.10.3-agh3-v1.3.1-all
