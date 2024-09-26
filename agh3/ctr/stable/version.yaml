@@ -13,3 +13,7 @@ spec:
     version: v1.5.0
     updaterTag: v1.10.5-agh3-v1.5.0-all
     releaseLog: "Update Playbook"
+  agentServer:
+    version: v2.3.0
+    path: s3.argushack.com/agent-server/v2.3.0
+    releaseLog: "Add select and forget agent"
