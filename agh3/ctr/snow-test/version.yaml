@@ -14,5 +14,5 @@ spec:
     updaterTag: v1.10.5-agh3-v1.5.0-all
     releaseLog: "Update Playbook"
   agentServer:
-    version: v2.4.1
+    version: v2.4.2
     releaseLog: "Add select and forget agent"
