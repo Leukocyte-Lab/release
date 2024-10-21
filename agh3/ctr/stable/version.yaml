@@ -10,7 +10,7 @@ spec:
         value: "3.8.12"
     releaseLog: "New Features:\n- Improved Realism and Flexibility in Scenario Exercises\n  - Added Custom Variable functionality, allowing specific parameters to be set before executing a scenario, providing exercise content that best fits the customer's environment.\n  \nImprovement:\n- Enhanced Search Functionality\n  - Now able to search scenarios using Technique numbers, cybersecurity framework numbers, etc.\n- More Precise Interface Terminology\n- System Performance Enhancement\nBug Fixes:\n- v3.4.0\n  - Filter operation system by platform\n  - General bug fix\n- v3.4.1\n  - Fix OIDC issue\n- v3.4.2\n  - Fix Export YAML API\n- v3.4.3\n  - Improve Report performance\n  - Export api version migrate to v3alpha2\n- v3.4.4\n  - Enhance report performance and extend timeout\n  - Fix potential performance overhead on execution\n  - Fix custom variable specter issue\n  "
   package:
-    version: v1.4.3
+    version: v1.4.4
     updaterTag: v1.10.5-agh3-v1.7.1-all
     releaseLog: ""
   agentServer:
