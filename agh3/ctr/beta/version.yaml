@@ -10,7 +10,7 @@ spec:
         value: "3.9.4"
     releaseLog: ""
   package:
-    version: v1.8.4
+    version: v1.8.5
     updaterTag: v1.11.0-agh3-v1.8.5-all
     releaseLog: ""
   agentServer:
