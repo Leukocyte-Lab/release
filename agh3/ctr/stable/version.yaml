@@ -10,9 +10,9 @@ spec:
         value: "3.10.8"
     releaseLog: ""
   package:
-    version: v1.8.5
-    updaterTag: v1.11.0-agh3-v1.8.5-all
-    releaseLog: ""
+    version: v1.8.6
+    updaterTag: v1.11.0-agh3-v1.8.6-all
+    releaseLog: "Playbook error corrections and quality improvement."
   agentServer:
     version: v2.4.1
     releaseLog: "Add select and forget agent"
