@@ -2,12 +2,12 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.9.1"
-    chartVersion: "3.10.11"
+    appVersion: "v3.10.2"
+    chartVersion: "3.11.2"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.10.11"
+        value: "3.11.2"
     releaseLog: ""
   package:
     version: v1.8.5
