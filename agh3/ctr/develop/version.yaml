@@ -14,7 +14,7 @@ spec:
     version: v1.8.5
     updaterTag: v1.11.0-agh3-v1.8.5-all
     releaseLog: ""
-    requiredAppVersion: "v3.11"
+    requiredAppVersion: "v3.10"
   agentServer:
     version: v2.4.1
     releaseLog: "Add select and forget agent"
