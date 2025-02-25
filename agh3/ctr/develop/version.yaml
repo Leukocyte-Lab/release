@@ -9,6 +9,7 @@ spec:
         path: /spec/version
         value: "3.10.14"
     releaseLog: ""
+    requiredPackageVersion: "v1.8.5"
   package:
     version: v1.8.5
     updaterTag: v1.11.0-agh3-v1.8.5-all
