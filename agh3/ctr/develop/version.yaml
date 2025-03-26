@@ -2,16 +2,16 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.9.2"
-    chartVersion: "3.10.14"
+    appVersion: "3.9.3"
+    chartVersion: "3.10.17"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.10.14"
+        value: "3.10.17"
     releaseLog: ""
     requiredPackageVersion: "v1.8.5"
   package:
-    version: v1.8.5
+    version: 1.9.0
     updaterTag: v1.11.0-agh3-v1.8.5-all
     releaseLog: ""
     requiredAppVersion: "v3.10"
