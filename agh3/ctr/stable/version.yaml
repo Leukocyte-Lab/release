@@ -2,17 +2,19 @@ apiVersion: agh.lkc-lab.com/v3alpha1
 kind: UpgradePlan
 spec:
   system:
-    appVersion: "v3.8.8"
-    chartVersion: "3.10.8"
+    appVersion: "v3.9.3"
+    chartVersion: "3.10.17"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.10.8"
+        value: "3.10.17"
     releaseLog: ""
+    requiredPackageVersion: "v1.8.5"
   package:
-    version: v1.8.6
-    updaterTag: v1.11.0-agh3-v1.8.6-all
-    releaseLog: "Playbook error corrections and quality improvement."
+    version: v1.8.7
+    updaterTag: v1.11.0-agh3-v1.8.7-all
+    releaseLog: ""
+    requiredAppVersion: "v3.10"
   agentServer:
-    version: v2.4.1
-    releaseLog: "Add select and forget agent"
+    version: v2.6.0
+    releaseLog: ""
