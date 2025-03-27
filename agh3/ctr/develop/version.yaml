@@ -3,11 +3,11 @@ kind: UpgradePlan
 spec:
   system:
     appVersion: "v3.9.3"
-    chartVersion: "3.10.18"
+    chartVersion: "3.10.19"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.10.18"
+        value: "3.10.19"
     releaseLog: ""
     requiredPackageVersion: "v1.8.5"
   package:
