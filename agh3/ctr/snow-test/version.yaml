@@ -16,5 +16,5 @@ spec:
     releaseLog: ""
     requiredAppVersion: "v3.10"
   agentServer:
-    version: v2.4.1
+    version: v2.8.0
     releaseLog: "Add select and forget agent"
