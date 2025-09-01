@@ -12,7 +12,7 @@ spec:
     requiredPackageVersion: "v1.8.5"
   package:
     version: v1.8.6
-    updaterTag: 29c1cc68498b10c9bd50126778c282ad9b421c70-agh3-v1.11.0-all
+    updaterTag: 7109940a6ddcb7a4fd9306ec69907c486d69c719-agh3-v1.11.0-all
     releaseLog: ""
     requiredAppVersion: "v3.10"
   agentServer:
