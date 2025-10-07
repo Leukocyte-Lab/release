@@ -16,5 +16,5 @@ spec:
     releaseLog: ""
     requiredAppVersion: "v3.10"
   agentServer:
-    version: v2.8.0
+    version: v2.9.0
     releaseLog: ""
