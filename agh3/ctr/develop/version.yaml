@@ -12,7 +12,7 @@ spec:
     requiredPackageVersion: "v1.10.2"
   package:
     version: v1.11.4
-    updaterTag: v1.15.0-agh3-v1.11.4-all
+    updaterTag: v1.15.0-agh3-v1.11.5-all
     releaseLog: ""
     requiredAppVersion: "v3.10"
   agentServer:
