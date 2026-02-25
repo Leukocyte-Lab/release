@@ -3,18 +3,18 @@ kind: UpgradePlan
 spec:
   system:
     appVersion: "v3.13.0"
-    chartVersion: "3.14.2"
+    chartVersion: "3.14.10"
     patches:
       - op: replace
         path: /spec/version
-        value: "3.14.2"
+        value: "3.14.10"
     releaseLog: ""
     requiredPackageVersion: "v1.10.2"
   package:
-    version: v1.12.0-rc.1
-    updaterTag: v1.15.2-agh3-v1.12.0-rc.1-all
+    version: v1.13.0-alpha
+    updaterTag: v1.15.2-agh3-v1.13.0-alpha-all
     releaseLog: ""
     requiredAppVersion: "v3.10"
   agentServer:
-    version: v2.13.0
+    version: v2.13.1
     releaseLog: ""
