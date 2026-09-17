@@ -1,0 +1,141 @@
+name: Publish VM Utility v1.6.4
+
+on:
+  push:
+    branches:
+      - release/v1.6.4
+    paths:
+      - .github/workflows/publish-vm-utility-v1.6.4.yaml
+
+permissions:
+  contents: write
+
+env:
+  VERSION: v1.6.4
+  PREVIOUS_VERSION: v1.6.3
+  SOURCE_SHA: 85d869af22a91e95266019159bab9f7b497b6ec6
+  RELEASE_SERVER: release.lkc-lab.com
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify release service health
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl --retry 3 --retry-delay 2 --connect-timeout 10 --max-time 30 -sS -o /tmp/healthz.body -w '%{http_code}' "https://${RELEASE_SERVER}/healthz")"
+          echo "healthz HTTP ${status}"
+          cat /tmp/healthz.body || true
+          test "$status" = "200"
+
+      - name: Checkout release registry develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Build v1.6.4 from v1.6.3 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/utility
+          mkdir -p /tmp/utility
+          tar -xzf "vm-utility/${PREVIOUS_VERSION}/utility.tgz" -C /tmp/utility
+
+          python3 <<'PY'
+          from pathlib import Path
+
+          shell = Path('/tmp/utility/shell.sh')
+          text = shell.read_text()
+          old_version = 'UTILITY_VERSION="v1.6.3"'
+          new_version = 'UTILITY_VERSION="v1.6.4"'
+          if text.count(old_version) != 1:
+              raise SystemExit(f'expected exactly one {old_version!r}, got {text.count(old_version)}')
+          shell.write_text(text.replace(old_version, new_version, 1))
+
+          check = Path('/tmp/utility/modules/check-network/start.sh')
+          text = check.read_text()
+          old = '''    response=$(curl --connect-timeout 10 -s "https://$RELEASE_CHANNEL_SERVER/dev/version.yaml")
+              if [[ "$response" == *"timestamp"* ]]; then
+          '''
+          new = '''    response=$(curl --connect-timeout 10 -s -o /dev/null -w "%{http_code}" "https://$RELEASE_CHANNEL_SERVER/healthz")
+              if [ "$response" == "200" ]; then
+          '''
+          if text.count(old) != 1:
+              raise SystemExit(f'expected exactly one stale release probe block, got {text.count(old)}')
+          text = text.replace(old, new, 1)
+
+          old_log = '        log error "Unexpected response: $response"'
+          new_log = '        log error "Unexpected response code: $response"'
+          # The release probe is the first matching log immediately after the replaced block.
+          marker = 'https://$RELEASE_CHANNEL_SERVER/healthz'
+          marker_pos = text.index(marker)
+          log_pos = text.index(old_log, marker_pos)
+          text = text[:log_pos] + new_log + text[log_pos + len(old_log):]
+          check.write_text(text)
+          PY
+
+          rm -rf "vm-utility/${VERSION}"
+          mkdir -p "vm-utility/${VERSION}"
+          tar -zcf "vm-utility/${VERSION}/utility.tgz" -C /tmp/utility .
+          cp /tmp/utility/install.sh "vm-utility/${VERSION}/install.sh"
+          printf '%s\n' "$VERSION" > "vm-utility/${VERSION}/version"
+          ln -sfn "$VERSION" vm-utility/latest
+
+      - name: Verify package before publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/verify
+          mkdir -p /tmp/verify
+          tar -xzf "vm-utility/${VERSION}/utility.tgz" -C /tmp/verify
+          grep -F 'UTILITY_VERSION="v1.6.4"' /tmp/verify/shell.sh
+          grep -F 'https://$RELEASE_CHANNEL_SERVER/healthz' /tmp/verify/modules/check-network/start.sh
+          grep -F 'if [ "$response" == "200" ]; then' /tmp/verify/modules/check-network/start.sh
+          grep -F 'Unexpected response code: $response' /tmp/verify/modules/check-network/start.sh
+          if grep -R -F '/dev/version.yaml' /tmp/verify/modules/check-network; then
+            echo 'stale /dev/version.yaml probe remains in package' >&2
+            exit 1
+          fi
+          sha256sum "vm-utility/${VERSION}/utility.tgz"
+
+      - name: Commit and publish v1.6.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add -A vm-utility
+          git diff --cached --stat
+          git commit -m "Release VM Utility ${VERSION}@${SOURCE_SHA}"
+          git push origin HEAD:develop
+
+      - name: Verify live release
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            health_status="$(curl --connect-timeout 10 --max-time 30 -sS -o /tmp/live-healthz -w '%{http_code}' "https://${RELEASE_SERVER}/healthz" || true)"
+            live_version="$(curl --connect-timeout 10 --max-time 30 -fsS "https://${RELEASE_SERVER}/vm-utility/latest/version" 2>/dev/null || true)"
+            echo "attempt=${attempt} health=${health_status} version=${live_version}"
+            if [[ "$health_status" == "200" && "$live_version" == "$VERSION" ]]; then
+              curl --connect-timeout 10 --max-time 120 -fsS "https://${RELEASE_SERVER}/vm-utility/${VERSION}/utility.tgz" -o /tmp/live-utility.tgz
+              rm -rf /tmp/live-verify
+              mkdir -p /tmp/live-verify
+              tar -xzf /tmp/live-utility.tgz -C /tmp/live-verify
+              grep -F 'UTILITY_VERSION="v1.6.4"' /tmp/live-verify/shell.sh
+              grep -F 'https://$RELEASE_CHANNEL_SERVER/healthz' /tmp/live-verify/modules/check-network/start.sh
+              grep -F 'if [ "$response" == "200" ]; then' /tmp/live-verify/modules/check-network/start.sh
+              if grep -R -F '/dev/version.yaml' /tmp/live-verify/modules/check-network; then
+                echo 'stale /dev/version.yaml probe found in live package' >&2
+                exit 1
+              fi
+              echo "live health body: $(cat /tmp/live-healthz)"
+              sha256sum /tmp/live-utility.tgz
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'release server did not converge to v1.6.4 within the retry window' >&2
+          exit 1
