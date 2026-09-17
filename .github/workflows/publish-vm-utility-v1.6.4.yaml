@@ -3,7 +3,7 @@ name: Publish VM Utility v1.6.4
 on:
   push:
     branches:
-      - release/v1.6.4
+      - develop
     paths:
       - .github/workflows/publish-vm-utility-v1.6.4.yaml
 
@@ -68,7 +68,6 @@ jobs:
 
           old_log = '        log error "Unexpected response: $response"'
           new_log = '        log error "Unexpected response code: $response"'
-          # The release probe is the first matching log immediately after the replaced block.
           marker = 'https://$RELEASE_CHANNEL_SERVER/healthz'
           marker_pos = text.index(marker)
           log_pos = text.index(old_log, marker_pos)
